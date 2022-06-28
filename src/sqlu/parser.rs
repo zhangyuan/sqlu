@@ -47,71 +47,69 @@ mod tests {
     fn parse_select_statement_into_json() -> anyhow::Result<()> {
         let ast_as_json = parse_sql_as_json_value("pg", "select id, name from users")?;
         let expected_json = json!(
-            {
-                "statements": [
-                    {
-                        "Query": {
-                            "body": {
-                                "Select": {
-                                    "cluster_by": [],
-                                    "distinct": false,
-                                    "distribute_by": [],
-                                    "from": [
-                                        {
-                                            "joins": [],
-                                            "relation": {
-                                                "Table": {
-                                                    "alias": null,
-                                                    "args": null,
-                                                    "name": [
-                                                        {
-                                                            "quote_style": null,
-                                                            "value": "users"
-                                                        }
-                                                    ],
-                                                    "with_hints": []
-                                                }
+           [
+                {
+                    "Query": {
+                        "body": {
+                            "Select": {
+                                "cluster_by": [],
+                                "distinct": false,
+                                "distribute_by": [],
+                                "from": [
+                                    {
+                                        "joins": [],
+                                        "relation": {
+                                            "Table": {
+                                                "alias": null,
+                                                "args": null,
+                                                "name": [
+                                                    {
+                                                        "quote_style": null,
+                                                        "value": "users"
+                                                    }
+                                                ],
+                                                "with_hints": []
                                             }
                                         }
-                                    ],
-                                    "group_by": [],
-                                    "having": null,
-                                    "into": null,
-                                    "lateral_views": [],
-                                    "projection": [
-                                        {
-                                            "UnnamedExpr": {
-                                                "Identifier": {
-                                                    "quote_style": null,
-                                                    "value": "id"
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "UnnamedExpr": {
-                                                "Identifier": {
-                                                    "quote_style": null,
-                                                    "value": "name"
-                                                }
+                                    }
+                                ],
+                                "group_by": [],
+                                "having": null,
+                                "into": null,
+                                "lateral_views": [],
+                                "projection": [
+                                    {
+                                        "UnnamedExpr": {
+                                            "Identifier": {
+                                                "quote_style": null,
+                                                "value": "id"
                                             }
                                         }
-                                    ],
-                                    "qualify": null,
-                                    "selection": null,
-                                    "sort_by": [],
-                                    "top": null
-                                }
-                            },
-                            "fetch": null,
-                            "limit": null,
-                            "lock": null,
-                            "offset": null,
-                            "order_by": [],
-                            "with": null
-                        }
+                                    },
+                                    {
+                                        "UnnamedExpr": {
+                                            "Identifier": {
+                                                "quote_style": null,
+                                                "value": "name"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "qualify": null,
+                                "selection": null,
+                                "sort_by": [],
+                                "top": null
+                            }
+                        },
+                        "fetch": null,
+                        "limit": null,
+                        "lock": null,
+                        "offset": null,
+                        "order_by": [],
+                        "with": null
                     }
-                ]
-            }
+                }
+            ]
         );
 
         assert_eq!(expected_json, ast_as_json);

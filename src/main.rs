@@ -1,7 +1,8 @@
 use anyhow::Ok;
 use serde::{Deserialize, Serialize};
 use sqlparser::ast::Statement;
-use sqlparser::dialect::SnowflakeDialect;
+use sqlparser::dialect::PostgreSqlDialect;
+use sqlparser::dialect::{Dialect, MySqlDialect, SnowflakeDialect};
 use sqlparser::parser::Parser;
 
 use warp::Filter;
@@ -23,9 +24,17 @@ struct ParseError {
     sql: String,
 }
 
-fn parse_sql(_: &str, sql: &str) -> anyhow::Result<Ast> {
-    let dialect = SnowflakeDialect {};
-    let statements = Parser::parse_sql(&dialect, sql)?;
+fn parse_sql(dialect_id: &str, sql: &str) -> anyhow::Result<Ast> {
+    let dialect: anyhow::Result<Box<dyn Dialect>> = match dialect_id {
+        "snowflake" | "sf" => Ok(Box::new(SnowflakeDialect {})),
+        "postgres" | "pg" => Ok(Box::new(PostgreSqlDialect {})),
+        "mysql" => Ok(Box::new(MySqlDialect {})),
+        _ => Err(anyhow::anyhow!("invalid dialect")),
+    };
+
+    let dialect = dialect?;
+
+    let statements = Parser::parse_sql(dialect.as_ref(), sql)?;
     let ast = Ast { statements };
     Ok(ast)
 }

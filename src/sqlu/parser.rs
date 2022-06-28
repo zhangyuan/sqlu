@@ -1,16 +1,14 @@
 use anyhow::Ok;
-use serde::Serialize;
 use sqlparser::ast::Statement;
 use sqlparser::dialect::PostgreSqlDialect;
 use sqlparser::dialect::{Dialect, MySqlDialect, SnowflakeDialect};
 use sqlparser::parser::Parser;
 
-#[derive(Serialize)]
 pub struct Ast {
-    statements: Vec<Statement>,
+    pub statement: Statement,
 }
 
-pub fn parse_sql(dialect_id: &str, sql: &str) -> anyhow::Result<Ast> {
+pub fn parse_sql(dialect_id: &str, sql: &str) -> anyhow::Result<Vec<Ast>> {
     let dialect: anyhow::Result<Box<dyn Dialect>> = match dialect_id {
         "snowflake" | "sf" => Ok(Box::new(SnowflakeDialect {})),
         "postgres" | "pg" => Ok(Box::new(PostgreSqlDialect {})),
@@ -21,12 +19,22 @@ pub fn parse_sql(dialect_id: &str, sql: &str) -> anyhow::Result<Ast> {
     let dialect = dialect?;
 
     let statements = Parser::parse_sql(dialect.as_ref(), sql)?;
-    let ast = Ast { statements };
-    Ok(ast)
+
+    let asts = statements
+        .into_iter()
+        .map(|s| Ast { statement: s })
+        .collect();
+
+    Ok(asts)
 }
 
 pub fn parse_sql_as_json_value(dialect_id: &str, sql: &str) -> anyhow::Result<serde_json::Value> {
-    parse_sql(dialect_id, sql).map(|ast| serde_json::to_value(ast).unwrap())
+    let parsed = parse_sql(dialect_id, sql)?;
+    let statements = parsed
+        .into_iter()
+        .map(|ast| serde_json::to_value(ast.statement).unwrap())
+        .collect();
+    Ok(statements)
 }
 
 #[cfg(test)]

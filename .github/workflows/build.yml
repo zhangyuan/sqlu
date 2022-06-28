@@ -38,10 +38,10 @@ jobs:
         command: clippy
         args: -- -D warnings
     - name: Build release binary
-      run: cargo build --release && du -sh target/release/sqlparser
+      run: cargo build --release && du -sh target/release/sqlu
     - name: Strip release binary
-      run: strip target/release/sqlparser && du -sh target/release/sqlparser
+      run: strip target/release/sqlu && du -sh target/release/sqlu
     - name: Compress binary
       uses: svenstaro/upx-action@v2
       with:
-        file: target/release/sqlparser
+        file: target/release/sqlu

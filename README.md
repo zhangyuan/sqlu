@@ -11,7 +11,7 @@ POST `/ast/`
 ```json
 {
     "dialect": "snowflake",
-    "sql": "with source as ( select id, name, count1, count2 from users) select name, max(count1, count2) from source"
+    "sql": "with source as ( select id, name, count1, count2 from users) select name, max(count1, count2) as max_count from source"
 }
 ```
 
@@ -59,38 +59,44 @@ Response
                                 }
                             },
                             {
-                                "UnnamedExpr": {
-                                    "Function": {
-                                        "args": [
-                                            {
-                                                "Unnamed": {
-                                                    "Expr": {
-                                                        "Identifier": {
-                                                            "quote_style": null,
-                                                            "value": "count1"
+                                "ExprWithAlias": {
+                                    "alias": {
+                                        "quote_style": null,
+                                        "value": "max_count"
+                                    },
+                                    "expr": {
+                                        "Function": {
+                                            "args": [
+                                                {
+                                                    "Unnamed": {
+                                                        "Expr": {
+                                                            "Identifier": {
+                                                                "quote_style": null,
+                                                                "value": "count1"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "Unnamed": {
+                                                        "Expr": {
+                                                            "Identifier": {
+                                                                "quote_style": null,
+                                                                "value": "count2"
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            },
-                                            {
-                                                "Unnamed": {
-                                                    "Expr": {
-                                                        "Identifier": {
-                                                            "quote_style": null,
-                                                            "value": "count2"
-                                                        }
-                                                    }
+                                            ],
+                                            "distinct": false,
+                                            "name": [
+                                                {
+                                                    "quote_style": null,
+                                                    "value": "max"
                                                 }
-                                            }
-                                        ],
-                                        "distinct": false,
-                                        "name": [
-                                            {
-                                                "quote_style": null,
-                                                "value": "max"
-                                            }
-                                        ],
-                                        "over": null
+                                            ],
+                                            "over": null
+                                        }
                                     }
                                 }
                             }

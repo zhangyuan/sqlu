@@ -10,8 +10,8 @@ POST `/ast/`
 
 ```json
 {
-    "dialect": "pg",
-    "sql": "with source as ( select id, name from users) select name, count(*) from source group by name"
+    "dialect": "snowflake",
+    "sql": "with source as ( select id, name, count1, count2 from users) select name, max(count1, count2) from source"
 }
 ```
 
@@ -45,14 +45,7 @@ Response
                                 }
                             }
                         ],
-                        "group_by": [
-                            {
-                                "Identifier": {
-                                    "quote_style": null,
-                                    "value": "name"
-                                }
-                            }
-                        ],
+                        "group_by": [],
                         "having": null,
                         "into": null,
                         "lateral_views": [],
@@ -70,14 +63,31 @@ Response
                                     "Function": {
                                         "args": [
                                             {
-                                                "Unnamed": "Wildcard"
+                                                "Unnamed": {
+                                                    "Expr": {
+                                                        "Identifier": {
+                                                            "quote_style": null,
+                                                            "value": "count1"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "Unnamed": {
+                                                    "Expr": {
+                                                        "Identifier": {
+                                                            "quote_style": null,
+                                                            "value": "count2"
+                                                        }
+                                                    }
+                                                }
                                             }
                                         ],
                                         "distinct": false,
                                         "name": [
                                             {
                                                 "quote_style": null,
-                                                "value": "count"
+                                                "value": "max"
                                             }
                                         ],
                                         "over": null
@@ -149,6 +159,22 @@ Response
                                                     "Identifier": {
                                                         "quote_style": null,
                                                         "value": "name"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "UnnamedExpr": {
+                                                    "Identifier": {
+                                                        "quote_style": null,
+                                                        "value": "count1"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "UnnamedExpr": {
+                                                    "Identifier": {
+                                                        "quote_style": null,
+                                                        "value": "count2"
                                                     }
                                                 }
                                             }

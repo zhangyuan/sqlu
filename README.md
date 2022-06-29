@@ -1,4 +1,4 @@
-# sqlparser
+# sqlu
 
 A simple HTTP API wrapping [sqlparser-rs](https://github.com/sqlparser-rs/sqlparser-rs).
 
